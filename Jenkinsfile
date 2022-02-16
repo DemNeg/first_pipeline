@@ -11,12 +11,6 @@ pipeline {
                 sh "mvn -Dmaven.test.failure.ignore=true clean compile"
             }
         }
-        stage('test') {
-            steps {
-                // Run the test.
-                sh "mvn test"
-            }
-        }
         stage("Package") { 
             steps { 
                  sh "mvn build" 
