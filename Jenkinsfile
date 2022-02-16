@@ -17,5 +17,15 @@ pipeline {
                 sh "mvn test"
             }
         }
+        stage("Package") { 
+            steps { 
+                 sh "mvn build" 
+             } 
+        }
+         stage("Docker build") { 
+            steps { 
+                 sh "docker build -t gousindevops/calculator ." 
+             } 
+        }
     }
 }
