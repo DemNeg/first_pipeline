@@ -1,9 +1,11 @@
 pipeline {
     agent any
-    def app
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M3"
+    }
+    environment{
+        DOCKERHUB_CREDENTIALS=credentials('registry')
     }
     stages {
         stage("Package") { 
@@ -13,17 +15,24 @@ pipeline {
         }
          stage("Docker build") { 
             steps { 
-                 app=docker.build("gousindevops/calculator")
+                 sh "docker build -t gousindevops/calculator ."
              } 
         }
+        stage("Login to Dockerhub"){
+            steps {
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+            }
+        }
+            
         stage("Docker push") { 
             steps { 
-                 docker.withRegistry('https://registry.hub.docker.com','registry')
-                 {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
-                 } 
+                 sh "docker push gousindevops/calculator"
              } 
+        }
+    }
+    post{
+        always{
+            sh "docker logout"
         }
     }
 }
