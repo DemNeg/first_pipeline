@@ -1,5 +1,6 @@
 pipeline {
     agent any
+    def app
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M3"
@@ -12,14 +13,15 @@ pipeline {
         }
          stage("Docker build") { 
             steps { 
-                 sh "docker build -t gousindevops/calculator ." 
+                 app=docker.build("gousindevops/calculator")
              } 
         }
         stage("Docker push") { 
             steps { 
                  docker.withRegistry('https://registry.hub.docker.com','registry')
                  {
-                    sh "docker push gousindevops/calculator ."
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
                  } 
              } 
         }
