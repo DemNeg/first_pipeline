@@ -16,13 +16,11 @@ pipeline {
              } 
         }
         stage("Docker push") { 
-            environment{
-                DHB_USERNAME=credentials('DHB_USERNAME')
-                DHB_PASSWORD=credentials('DHB_PASSWORD')
-            }
             steps { 
-                 sh "docker login -u $DHB_USERNAME -p $DHB_PASSWORD"
-                 sh "docker push gousindevops/calculator ." 
+                 docker.withRegistry('https://registry.hub.docker.com','registry')
+                 {
+                    sh "docker push gousindevops/calculator ."
+                 } 
              } 
         }
     }
