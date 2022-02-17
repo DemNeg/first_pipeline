@@ -7,6 +7,7 @@ pipeline {
     stages {
         stage('compile') {
             steps {
+                sh "java -version"
                 // Run Maven on a Unix agent.
                 sh "mvn -Dmaven.test.failure.ignore=true clean compile"
             }
